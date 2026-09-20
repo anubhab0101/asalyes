@@ -7,9 +7,51 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: '#0ea5e9',
-        secondary: '#0f172a'
-      }
+        md: {
+          background: '#FFFBFE',
+          onBackground: '#1C1B1F',
+          primary: '#6750A4',
+          onPrimary: '#FFFFFF',
+          secondaryContainer: '#E8DEF8',
+          onSecondaryContainer: '#1D192B',
+          tertiary: '#7D5260',
+          surfaceContainer: '#F3EDF7',
+          surfaceContainerLow: '#E7E0EC',
+          outline: '#79747E',
+          onSurfaceVariant: '#49454F',
+        }
+      },
+      fontFamily: {
+        sans: ['Roboto', 'sans-serif'],
+      },
+      animation: {
+        "text-reveal": "text-reveal 1.5s cubic-bezier(0.77, 0, 0.175, 1) 0.5s",
+      },
+      keyframes: {
+        "text-reveal": {
+          "0%": {
+            strokeDashoffset: "20%",
+            strokeDasharray: "0 50%",
+            fill: "transparent",
+          },
+          "20%": {
+            fill: "transparent",
+            stroke: "var(--tw-colors-md-primary)",
+            strokeWidth: "2",
+          },
+          "80%": {
+            fill: "transparent",
+            stroke: "var(--tw-colors-md-primary)",
+            strokeWidth: "2",
+          },
+          "100%": {
+            strokeDashoffset: "-20%",
+            strokeDasharray: "50% 0",
+            fill: "var(--tw-colors-md-primary)",
+            strokeWidth: "0",
+          },
+        },
+      },
     },
   },
   plugins: [],
