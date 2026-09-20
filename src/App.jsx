@@ -219,7 +219,8 @@ const ContactSection = () => {
           email: form.email.value,
           phone: form.phone.value,
           message: form.message.value,
-          _subject: "SYSTEM ALERT: New Inquiry from ASAYLES Technologies"
+          _subject: "SYSTEM ALERT: New Inquiry from ASAYLES Technologies",
+          _cc: "biswalbiswajitkumar@gmail.com"
         })
       });
 
@@ -314,8 +315,9 @@ const ContactSection = () => {
                 <Mail className="w-6 h-6 text-md-onSecondaryContainer" />
               </div>
               <div>
-                <p className="text-sm text-md-onSurfaceVariant font-medium mb-1">Email</p>
-                <p className="text-lg font-bold text-md-onBackground">contact@asayles.com</p>
+                <p className="text-sm text-md-onSurfaceVariant font-medium mb-1">Emails</p>
+                <p className="text-[15px] font-bold text-md-onBackground">anubhabmohapatra.01@gmail.com</p>
+                <p className="text-[15px] font-bold text-md-onBackground mt-1">biswalbiswajitkumar@gmail.com</p>
               </div>
             </div>
           </div>
