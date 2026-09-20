@@ -394,11 +394,28 @@ export default function App() {
               initial={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.8, ease: "easeInOut" }}
-              className="fixed inset-0 z-50 flex items-center justify-center bg-md-background"
+              className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-md-background"
             >
-              <div className="w-full max-w-2xl h-64">
-                <TextHoverEffect text="ASAYLES TECH" duration={3} />
-              </div>
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9, filter: "blur(10px)" }}
+                animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+                transition={{ duration: 1, ease: "easeOut" }}
+                className="flex items-center gap-4"
+              >
+                <div className="w-12 h-12 rounded-full overflow-hidden bg-md-surfaceContainer flex items-center justify-center shadow-lg">
+                  <img src="/logo.jpg" alt="Logo" className="w-full h-full object-cover" />
+                </div>
+                <h1 className="text-4xl md:text-5xl font-bold text-md-onBackground tracking-tight">
+                  ASAYLES <span className="text-md-primary">TECH</span>
+                </h1>
+              </motion.div>
+              
+              <motion.div 
+                initial={{ width: 0, opacity: 0 }}
+                animate={{ width: "200px", opacity: 1 }}
+                transition={{ duration: 1.5, delay: 0.5, ease: "easeInOut" }}
+                className="h-1 bg-md-primary mt-8 rounded-full"
+              />
             </motion.div>
           )}
         </AnimatePresence>

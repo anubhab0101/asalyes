@@ -36,18 +36,18 @@ export default {
           },
           "20%": {
             fill: "transparent",
-            stroke: "var(--tw-colors-md-primary)",
+            stroke: "#6750A4",
             strokeWidth: "2",
           },
           "80%": {
             fill: "transparent",
-            stroke: "var(--tw-colors-md-primary)",
+            stroke: "#6750A4",
             strokeWidth: "2",
           },
           "100%": {
             strokeDashoffset: "-20%",
             strokeDasharray: "50% 0",
-            fill: "var(--tw-colors-md-primary)",
+            fill: "#6750A4",
             strokeWidth: "0",
           },
         },
