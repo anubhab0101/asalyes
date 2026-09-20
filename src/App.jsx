@@ -198,9 +198,48 @@ const ServicesSection = () => (
   </section>
 );
 
+// MD3 Filled Text Field implementation
+const InputField = ({ label, type = "text", name, rows }) => {
+  const [isFocused, setIsFocused] = useState(false);
+  const [hasValue, setHasValue] = useState(false);
+
+  const handleBlur = (e) => {
+    setIsFocused(false);
+    setHasValue(e.target.value.trim().length > 0);
+  };
+
+  const active = isFocused || hasValue;
+
+  return (
+    <div className="relative">
+      <label className={`absolute left-4 transition-all duration-200 pointer-events-none ${active ? 'top-1.5 text-xs text-md-primary' : 'top-4 text-md-onSurfaceVariant'}`}>
+        {label}
+      </label>
+      {rows ? (
+        <textarea 
+          name={name} 
+          rows={rows} 
+          required 
+          onFocus={() => setIsFocused(true)}
+          onBlur={handleBlur}
+          className="w-full px-4 pt-6 pb-2 bg-md-surfaceContainerLow rounded-t-xl rounded-b-none border-b-2 border-md-outline focus:border-md-primary focus:outline-none transition-colors text-md-onBackground resize-none"
+        ></textarea>
+      ) : (
+        <input 
+          type={type} 
+          name={name} 
+          required={name !== 'phone'}
+          onFocus={() => setIsFocused(true)}
+          onBlur={handleBlur}
+          className="w-full px-4 pt-6 pb-2 h-14 bg-md-surfaceContainerLow rounded-t-xl rounded-b-none border-b-2 border-md-outline focus:border-md-primary focus:outline-none transition-colors text-md-onBackground"
+        />
+      )}
+    </div>
+  );
+};
+
 const ContactSection = () => {
   const [status, setStatus] = useState('');
-  const [activeField, setActiveField] = useState(null);
   
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -227,43 +266,15 @@ const ContactSection = () => {
       if (response.ok) {
         setStatus('success');
         form.reset();
+        // Dispatch custom event to tell inputs they are clear
+        const event = new Event('reset');
+        form.dispatchEvent(event);
       } else {
         setStatus('error');
       }
     } catch (error) {
       setStatus('error');
     }
-  };
-
-  // MD3 Filled Text Field implementation (Gooey feel via transitions)
-  const InputField = ({ label, type = "text", name, rows }) => {
-    const isFocused = activeField === name;
-    return (
-      <div className="relative">
-        <label className={`absolute left-4 transition-all duration-200 pointer-events-none ${isFocused ? 'top-1.5 text-xs text-md-primary' : 'top-4 text-md-onSurfaceVariant'}`}>
-          {label}
-        </label>
-        {rows ? (
-          <textarea 
-            name={name} 
-            rows={rows} 
-            required 
-            onFocus={() => setActiveField(name)}
-            onBlur={(e) => setActiveField(e.target.value ? name : null)}
-            className="w-full px-4 pt-6 pb-2 bg-md-surfaceContainerLow rounded-t-xl rounded-b-none border-b-2 border-md-outline focus:border-md-primary focus:outline-none transition-colors text-md-onBackground resize-none"
-          ></textarea>
-        ) : (
-          <input 
-            type={type} 
-            name={name} 
-            required={name !== 'phone'}
-            onFocus={() => setActiveField(name)}
-            onBlur={(e) => setActiveField(e.target.value ? name : null)}
-            className="w-full px-4 pt-6 pb-2 h-14 bg-md-surfaceContainerLow rounded-t-xl rounded-b-none border-b-2 border-md-outline focus:border-md-primary focus:outline-none transition-colors text-md-onBackground"
-          />
-        )}
-      </div>
-    );
   };
 
   return (
@@ -368,11 +379,28 @@ const Footer = () => (
 export default function App() {
   const [appReady, setAppReady] = useState(false);
 
+  useEffect(() => {
+    // Ensuring the app always loads after 3 seconds maximum, regardless of component unmounts.
+    const timer = setTimeout(() => setAppReady(true), 3000);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <ReactLenis root options={{ lerp: 0.05, smoothWheel: true }}>
       <div className="relative min-h-screen bg-md-background overflow-x-hidden selection:bg-md-primary/30 font-sans text-md-onBackground">
         <AnimatePresence>
-          {!appReady && <Preloader onComplete={() => setAppReady(true)} />}
+          {!appReady && (
+            <motion.div 
+              initial={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.8, ease: "easeInOut" }}
+              className="fixed inset-0 z-50 flex items-center justify-center bg-md-background"
+            >
+              <div className="w-full max-w-2xl h-64">
+                <TextHoverEffect text="ASAYLES TECH" duration={3} />
+              </div>
+            </motion.div>
+          )}
         </AnimatePresence>
 
         {appReady && (
