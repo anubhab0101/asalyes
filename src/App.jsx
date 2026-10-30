@@ -605,7 +605,7 @@ const ContactSection = ({ selectedProduct, onClearProduct }) => {
       `*Topic:* ${selectedProduct || 'General Business Inquiry'}\n\n` +
       `*Message:*\n${formData.message || 'I would like to inquire about your software solutions.'}`;
     
-    const whatsappUrl = `https://wa.me/918260586748?text=${encodeURIComponent(text)}`;
+    const whatsappUrl = `https://wa.me/916372009049?text=${encodeURIComponent(text)}`;
     window.open(whatsappUrl, '_blank');
   };
 
@@ -619,7 +619,7 @@ const ContactSection = ({ selectedProduct, onClearProduct }) => {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 3500);
 
-      const response = await fetch("https://formsubmit.co/ajax/anubhabmohapatra.01@gmail.com", {
+      const response = await fetch("https://formsubmit.co/ajax/asaylestech.ctc@gmail.com", {
         method: "POST",
         signal: controller.signal,
         headers: { 
@@ -650,7 +650,7 @@ const ContactSection = ({ selectedProduct, onClearProduct }) => {
       if (onClearProduct) onClearProduct();
     } else {
       // Fallback: If external free server is down, open user's mail client directly
-      const mailtoUrl = `mailto:anubhabmohapatra.01@gmail.com?cc=biswalbiswajitkumar@gmail.com&subject=${encodeURIComponent(
+      const mailtoUrl = `mailto:asaylestech.ctc@gmail.com?cc=biswalbiswajitkumar@gmail.com&subject=${encodeURIComponent(
         selectedProduct ? `INQUIRY: ${selectedProduct}` : "New Inquiry - ASAYLES Technologies"
       )}&body=${encodeURIComponent(
         `Name: ${formData.name}\nEmail: ${formData.email}\nPhone: ${formData.phone || 'N/A'}\n\nMessage:\n${formData.message}`
@@ -700,8 +700,8 @@ const ContactSection = ({ selectedProduct, onClearProduct }) => {
                 <Phone className="w-6 h-6 text-md-onSecondaryContainer" />
               </div>
               <div>
-                <p className="text-sm text-md-onSurfaceVariant font-medium mb-1">Phone / WhatsApp</p>
-                <p className="text-lg font-bold text-md-onBackground">+91 8260586748</p>
+                <p className="text-sm text-md-onSurfaceVariant font-medium mb-1">Company Contact / WhatsApp</p>
+                <p className="text-lg font-bold text-md-onBackground">+91 6372009049</p>
               </div>
             </div>
             
@@ -710,9 +710,8 @@ const ContactSection = ({ selectedProduct, onClearProduct }) => {
                 <Mail className="w-6 h-6 text-md-onSecondaryContainer" />
               </div>
               <div>
-                <p className="text-sm text-md-onSurfaceVariant font-medium mb-1">Emails</p>
-                <p className="text-[15px] font-bold text-md-onBackground">anubhabmohapatra.01@gmail.com</p>
-                <p className="text-[15px] font-bold text-md-onBackground mt-1">biswalbiswajitkumar@gmail.com</p>
+                <p className="text-sm text-md-onSurfaceVariant font-medium mb-1">Company Email</p>
+                <p className="text-[15px] font-bold text-md-onBackground">asaylestech.ctc@gmail.com</p>
               </div>
             </div>
 
@@ -722,14 +721,14 @@ const ContactSection = ({ selectedProduct, onClearProduct }) => {
                 Instant Support on WhatsApp
               </p>
               <p className="text-xs text-emerald-700 mb-3">
-                Need immediate response or demo scheduling? Chat directly with the founders on WhatsApp.
+                Need immediate response or demo scheduling? Chat directly with us on WhatsApp.
               </p>
               <button
                 type="button"
                 onClick={handleWhatsAppSend}
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#25D366] text-white text-sm font-medium hover:bg-[#20bd5a] active:scale-95 transition-all shadow-sm cursor-pointer"
               >
-                Chat on WhatsApp (+91 8260586748)
+                Chat on WhatsApp (+91 6372009049)
               </button>
             </div>
           </div>
@@ -820,7 +819,7 @@ const ContactSection = ({ selectedProduct, onClearProduct }) => {
               )}
               {status === 'error' && (
                 <div className="p-4 bg-amber-100 rounded-2xl text-amber-800 text-sm text-center">
-                  Could not send automatically. Please click <strong>Send on WhatsApp</strong> or email us directly at anubhabmohapatra.01@gmail.com.
+                  Could not send automatically. Please click <strong>Send on WhatsApp</strong> or email us directly at asaylestech.ctc@gmail.com.
                 </div>
               )}
             </form>
