@@ -592,13 +592,36 @@ const ContactSection = ({ selectedProduct, onClearProduct }) => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  const handleWhatsAppSend = (e) => {
+    e?.preventDefault();
+    if (!formData.name && !formData.message) {
+      alert('Please fill in your name and message first.');
+      return;
+    }
+    const text = `*New Inquiry via ASAYLES TECH Website*\n\n` +
+      `*Name:* ${formData.name || 'Not provided'}\n` +
+      `*Email:* ${formData.email || 'Not provided'}\n` +
+      `*Phone:* ${formData.phone || 'Not provided'}\n` +
+      `*Topic:* ${selectedProduct || 'General Business Inquiry'}\n\n` +
+      `*Message:*\n${formData.message || 'I would like to inquire about your software solutions.'}`;
+    
+    const whatsappUrl = `https://wa.me/918260586748?text=${encodeURIComponent(text)}`;
+    window.open(whatsappUrl, '_blank');
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setStatus('sending');
     
+    let sentSuccessfully = false;
+
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 3500);
+
       const response = await fetch("https://formsubmit.co/ajax/anubhabmohapatra.01@gmail.com", {
         method: "POST",
+        signal: controller.signal,
         headers: { 
           'Content-Type': 'application/json',
           'Accept': 'application/json'
@@ -612,16 +635,29 @@ const ContactSection = ({ selectedProduct, onClearProduct }) => {
           _cc: "biswalbiswajitkumar@gmail.com"
         })
       });
+      clearTimeout(timeoutId);
 
-      if (response.ok) {
-        setStatus('success');
-        setFormData({ name: '', email: '', phone: '', message: '' });
-        if (onClearProduct) onClearProduct();
-      } else {
-        setStatus('error');
+      if (response && response.ok) {
+        sentSuccessfully = true;
       }
-    } catch (error) {
-      setStatus('error');
+    } catch (err) {
+      sentSuccessfully = false;
+    }
+
+    if (sentSuccessfully) {
+      setStatus('success');
+      setFormData({ name: '', email: '', phone: '', message: '' });
+      if (onClearProduct) onClearProduct();
+    } else {
+      // Fallback: If external free server is down, open user's mail client directly
+      const mailtoUrl = `mailto:anubhabmohapatra.01@gmail.com?cc=biswalbiswajitkumar@gmail.com&subject=${encodeURIComponent(
+        selectedProduct ? `INQUIRY: ${selectedProduct}` : "New Inquiry - ASAYLES Technologies"
+      )}&body=${encodeURIComponent(
+        `Name: ${formData.name}\nEmail: ${formData.email}\nPhone: ${formData.phone || 'N/A'}\n\nMessage:\n${formData.message}`
+      )}`;
+      
+      window.location.href = mailtoUrl;
+      setStatus('fallback_success');
     }
   };
 
@@ -664,7 +700,7 @@ const ContactSection = ({ selectedProduct, onClearProduct }) => {
                 <Phone className="w-6 h-6 text-md-onSecondaryContainer" />
               </div>
               <div>
-                <p className="text-sm text-md-onSurfaceVariant font-medium mb-1">Phone</p>
+                <p className="text-sm text-md-onSurfaceVariant font-medium mb-1">Phone / WhatsApp</p>
                 <p className="text-lg font-bold text-md-onBackground">+91 8260586748</p>
               </div>
             </div>
@@ -678,6 +714,23 @@ const ContactSection = ({ selectedProduct, onClearProduct }) => {
                 <p className="text-[15px] font-bold text-md-onBackground">anubhabmohapatra.01@gmail.com</p>
                 <p className="text-[15px] font-bold text-md-onBackground mt-1">biswalbiswajitkumar@gmail.com</p>
               </div>
+            </div>
+
+            <div className="p-5 rounded-2xl bg-[#25D366]/10 border border-[#25D366]/20">
+              <p className="text-sm font-semibold text-emerald-800 mb-2 flex items-center gap-2">
+                <MessageSquare className="w-4 h-4 text-emerald-600" />
+                Instant Support on WhatsApp
+              </p>
+              <p className="text-xs text-emerald-700 mb-3">
+                Need immediate response or demo scheduling? Chat directly with the founders on WhatsApp.
+              </p>
+              <button
+                type="button"
+                onClick={handleWhatsAppSend}
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#25D366] text-white text-sm font-medium hover:bg-[#20bd5a] active:scale-95 transition-all shadow-sm cursor-pointer"
+              >
+                Chat on WhatsApp (+91 8260586748)
+              </button>
             </div>
           </div>
 
@@ -700,7 +753,7 @@ const ContactSection = ({ selectedProduct, onClearProduct }) => {
                       message: `Hello ASAYLES TECH,\n\nI am requesting details regarding ${chip.val}.\nPlease get in touch with me.`
                     }));
                   }}
-                  className="text-xs px-3.5 py-1.5 rounded-full bg-md-surfaceContainer hover:bg-md-primary/10 active:scale-95 text-md-onBackground border border-md-outline/20 transition-all"
+                  className="text-xs px-3.5 py-1.5 rounded-full bg-md-surfaceContainer hover:bg-md-primary/10 active:scale-95 text-md-onBackground border border-md-outline/20 transition-all cursor-pointer"
                 >
                   {chip.label}
                 </button>
@@ -740,18 +793,34 @@ const ContactSection = ({ selectedProduct, onClearProduct }) => {
                 onChange={handleChange} 
               />
               
-              <Button type="submit" disabled={status === 'sending'} className="w-full">
-                {status === 'sending' ? 'Sending...' : 'Submit Inquiry'}
-              </Button>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Button type="submit" disabled={status === 'sending'} className="flex-1">
+                  {status === 'sending' ? 'Sending...' : 'Send via Email'}
+                </Button>
+
+                <button
+                  type="button"
+                  onClick={handleWhatsAppSend}
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3.5 text-base font-medium rounded-full bg-[#25D366] text-white hover:bg-[#20bd5a] active:scale-95 transition-all shadow-sm cursor-pointer"
+                >
+                  <MessageSquare className="w-5 h-5" />
+                  Send on WhatsApp
+                </button>
+              </div>
 
               {status === 'success' && (
                 <div className="p-4 bg-green-100 rounded-2xl text-green-800 text-sm text-center">
                   Message Sent Successfully! We will reach out shortly.
                 </div>
               )}
+              {status === 'fallback_success' && (
+                <div className="p-4 bg-blue-50 rounded-2xl text-blue-800 text-sm text-center">
+                  Opening your email client to send message... You can also click <strong>Send on WhatsApp</strong> for instant response!
+                </div>
+              )}
               {status === 'error' && (
-                <div className="p-4 bg-red-100 rounded-2xl text-red-800 text-sm text-center">
-                  Error sending message. Please try again.
+                <div className="p-4 bg-amber-100 rounded-2xl text-amber-800 text-sm text-center">
+                  Could not send automatically. Please click <strong>Send on WhatsApp</strong> or email us directly at anubhabmohapatra.01@gmail.com.
                 </div>
               )}
             </form>
