@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Monitor, Code, Cloud, Shield, ChevronRight, Phone, Mail, User, Cpu, Network,
+  Monitor, Code, Cloud, Shield, ChevronRight, ChevronLeft, Phone, Mail, User, Cpu, Network,
   Utensils, ChefHat, Pill, Receipt, Calendar, MessageSquare, WifiOff, Boxes,
-  Store, CheckCircle2, ArrowRight, Sparkles, Layers, ShieldCheck, Activity, Users, FileText
+  Store, CheckCircle2, ArrowRight, Sparkles, Layers, ShieldCheck, Activity, Users, FileText,
+  Car, Bike, Sun, Droplets, ZoomIn, Clock, CreditCard
 } from 'lucide-react';
 import { CardSpotlight, TextHoverEffect } from './components/ui/AceternityUI';
 import { ReactLenis } from '@studio-freight/react-lenis';
@@ -142,7 +143,7 @@ const HeroSection = () => (
         transition={{ duration: 0.8, delay: 0.3 }}
         className="text-xl text-md-onSurfaceVariant mb-10 max-w-2xl mx-auto"
       >
-        ASAYLES Technologies empowers modern enterprises with industry-leading business ecosystems—from high-performance restaurant POS systems to precision pharmacy software and resilient cloud architectures.
+        ASAYLES Technologies empowers modern businesses with high-impact software platforms—from doorstep vehicle & solar care (QuickWashHub) to enterprise restaurant POS (OrioSlice) and pharmacy retail management (MediShop).
       </motion.p>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -203,333 +204,654 @@ const AboutSection = () => (
   </section>
 );
 
-// Services and Products Section
-const ServicesSection = ({ onSelectProduct }) => (
-  <section id="services" className="py-24 relative z-10 bg-md-background">
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      {/* Section Header */}
-      <div className="text-center mb-20">
-        <span className="px-5 py-2 rounded-full bg-md-secondaryContainer text-md-onSecondaryContainer text-sm font-semibold tracking-wide uppercase inline-block mb-4">
-          Core Software & Solutions
-        </span>
-        <h2 className="text-3xl md:text-5xl font-bold text-md-onBackground mb-4">
-          Our Products & Services
-        </h2>
-        <p className="text-xl text-md-onSurfaceVariant max-w-3xl mx-auto">
-          Custom-engineered, high-impact platforms designed to streamline daily business operations with offline resilience and ongoing support.
-        </p>
-      </div>
+// Services and Products Carousel Section
+const ServicesSection = ({ onSelectProduct }) => {
+  const [activeSlide, setActiveSlide] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
 
-      {/* PRODUCT NO. 1: OrioSlice Restaurant */}
-      <div className="mb-24 bg-md-surfaceContainer rounded-[40px] p-8 md:p-14 shadow-sm border border-md-outline/10 relative overflow-hidden">
-        {/* Subtle decorative glow */}
-        <div className="absolute top-0 right-0 w-80 h-80 bg-md-primary/10 rounded-full blur-3xl pointer-events-none" />
+  const projects = [
+    {
+      id: "quickwashhub",
+      badge: "Project 01 • Doorstep Mobility & Solar Care",
+      badgeColor: "bg-emerald-600 text-white",
+      tagline: "CAR, BIKE & SOLAR PANEL CARE, AT YOUR DOOR",
+      title: "QuickWashHub",
+      headline: "Car, bike aur solar panel ki safai — aapke darwaze par.",
+      subheading: "QuickWashHub ke saath car ya bike wash book karein, ya residential aur commercial solar panels ke liye quote request bhejein. Apne area mein available service chunein, convenient time set karein, aur booking updates ek hi jagah paayein.",
+      heroImage: "/images/quickwashhub-sales-hero.png",
+      heroAlt: "QuickWashHub doorstep car and bike wash service",
+      trustLine: "Simple booking · Convenient doorstep service · Secure online payments",
+      cta1: "Book a wash",
+      cta1Product: "QuickWashHub: Book a Wash",
+      cta2: "Explore services / Solar Quote",
+      cta2Product: "QuickWashHub: Solar / Doorstep Service Quote",
+      type: "quickwashhub",
+      accent: "#059669",
+      accentLight: "rgba(5, 150, 105, 0.12)"
+    },
+    {
+      id: "orioslice",
+      badge: "Project 02 • Restaurant POS & Operations",
+      badgeColor: "bg-md-primary text-white",
+      tagline: "RESTAURANT ECOSYSTEM & SMART BILLING",
+      title: "OrioSlice Restaurant",
+      headline: "Restaurant ke roz ke operations, ek system mein.",
+      subheading: "OrioSlice Restaurant dine-in, takeaway aur delivery operations ko manage karne mein madad karta hai. Orders aur billing se lekar kitchen tickets, menu, tables, inventory, staff aur reports tak—restaurant team apne roz ke kaam ek jagah se sambhal sakti hai.",
+      heroImage: null,
+      trustLine: "Local Server Architecture · Works During Internet Outages · Full Staff Onboarding",
+      cta1: "Book a Demo",
+      cta1Product: "OrioSlice Restaurant: Book a Demo",
+      cta2: "Get a Service Quote",
+      cta2Product: "OrioSlice Restaurant: Get a Service Quote",
+      type: "orioslice",
+      accent: "#6750A4",
+      accentLight: "rgba(103, 80, 164, 0.12)"
+    },
+    {
+      id: "medishop",
+      badge: "Project 03 • Healthcare & Pharmacy Retail",
+      badgeColor: "bg-md-tertiary text-white",
+      tagline: "HEALTHCARE RETAIL & WORKSPACE",
+      title: "MediShop — Pharmacy Management",
+      headline: "Run your pharmacy with greater clarity.",
+      subheading: "MediShop is pharmacy management software that brings medicine inventory, supplier purchases, counter billing, doctor appointments and customer communication into one workspace. It helps pharmacy owners and staff keep everyday shop records organised.",
+      heroImage: null,
+      trustLine: "Searchable Medicine Catalogue · Batch & Expiry Tracking · Doctor Appointments",
+      cta1: "Book a Guided Demo",
+      cta1Product: "MediShop: Book a Guided Demo",
+      cta2: "Discuss Setup & Pricing",
+      cta2Product: "MediShop: Discuss Setup & Pricing",
+      type: "medishop",
+      accent: "#7D5260",
+      accentLight: "rgba(125, 82, 96, 0.12)"
+    }
+  ];
 
-        <div className="relative z-10">
-          <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-md-primary text-md-onPrimary text-xs font-bold uppercase tracking-wider">
-              <Utensils className="w-3.5 h-3.5" />
-              Service No. 1 • Restaurant POS & Operations
-            </div>
-            <span className="text-sm font-medium text-md-onSurfaceVariant bg-md-background px-4 py-1.5 rounded-full border border-md-outline/20">
-              Offline-Ready Architecture
-            </span>
-          </div>
+  // Auto-slide effect every 8 seconds, pausing on hover
+  useEffect(() => {
+    if (isPaused) return;
+    const interval = setInterval(() => {
+      setActiveSlide((prev) => (prev + 1) % projects.length);
+    }, 8000);
+    return () => clearInterval(interval);
+  }, [isPaused, projects.length]);
 
-          <div className="max-w-3xl mb-8">
-            <h3 className="text-3xl md:text-5xl font-bold text-md-onBackground mb-3 tracking-tight">
-              OrioSlice Restaurant
-            </h3>
-            <p className="text-xl md:text-2xl font-semibold text-md-primary mb-4">
-              Restaurant ke roz ke operations, ek system mein.
-            </p>
-            <p className="text-lg text-md-onSurfaceVariant leading-relaxed">
-              OrioSlice Restaurant dine-in, takeaway aur delivery operations ko manage karne mein madad karta hai. Orders aur billing se lekar kitchen tickets, menu, tables, inventory, staff aur reports tak—restaurant team apne roz ke kaam ek jagah se sambhal sakti hai.
-            </p>
-          </div>
+  const current = projects[activeSlide];
 
-          {/* Key Features Grid */}
-          <div className="mb-10">
-            <h4 className="text-lg font-bold text-md-onBackground mb-6 flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-md-primary" />
-              Key Features
-            </h4>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-              {[
-                {
-                  title: "POS & Billing",
-                  desc: "Orders, modifiers, combos, discounts, tax aur instant UPI QR checkout.",
-                  icon: Receipt
-                },
-                {
-                  title: "Tables & Reservations",
-                  desc: "Interactive floor view, real-time table status, waitlist aur advance reservations.",
-                  icon: Layers
-                },
-                {
-                  title: "Kitchen Display (KDS)",
-                  desc: "Kitchen order tickets (KOT), station routing, priority aur preparation tracking.",
-                  icon: ChefHat
-                },
-                {
-                  title: "Menu & Inventory",
-                  desc: "Menu management, ingredient tracking, recipe costing, purchasing aur waste records.",
-                  icon: Boxes
-                },
-                {
-                  title: "Team Management",
-                  desc: "Staff roles, biometric/attendance logging, shifts scheduling aur payroll tools.",
-                  icon: Users
-                },
-                {
-                  title: "Customers & Reports",
-                  desc: "Customer profiles, loyalty tools, comprehensive sales reports aur owner dashboard.",
-                  icon: FileText
-                },
-              ].map((feat, idx) => (
-                <div key={idx} className="p-5 rounded-2xl bg-md-background shadow-sm hover:shadow-md transition-all border border-md-outline/10">
-                  <div className="w-10 h-10 rounded-xl bg-md-primary/10 flex items-center justify-center mb-3">
-                    <feat.icon className="w-5 h-5 text-md-primary" />
-                  </div>
-                  <h5 className="font-bold text-md-onBackground text-base mb-1">{feat.title}</h5>
-                  <p className="text-sm text-md-onSurfaceVariant leading-snug">{feat.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
+  const nextSlide = () => setActiveSlide((prev) => (prev + 1) % projects.length);
+  const prevSlide = () => setActiveSlide((prev) => (prev - 1 + projects.length) % projects.length);
 
-          {/* Flexible Deployment Callout */}
-          <div className="p-6 rounded-2xl bg-md-secondaryContainer/50 border border-md-outline/15 mb-10">
-            <div className="flex items-start gap-4">
-              <div className="w-10 h-10 rounded-full bg-md-primary text-white flex items-center justify-center flex-shrink-0 mt-1">
-                <WifiOff className="w-5 h-5" />
-              </div>
-              <div>
-                <h5 className="text-base font-bold text-md-onSecondaryContainer mb-1">
-                  Flexible Deployment & Local Server Architecture
-                </h5>
-                <p className="text-sm text-md-onSurfaceVariant">
-                  Local restaurant server par chal sakta hai; local network par core billing aur kitchen workflows <strong>internet outage ke dauran bhi uninterrupted kaam karte hain</strong>.
-                </p>
-              </div>
-            </div>
-          </div>
+  return (
+    <section id="services" className="py-24 relative z-10 bg-md-background">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Section Header */}
+        <div className="text-center mb-14">
+          <span className="px-5 py-2 rounded-full bg-md-secondaryContainer text-md-onSecondaryContainer text-sm font-semibold tracking-wide uppercase inline-block mb-4">
+            Interactive Project Showcase
+          </span>
+          <h2 className="text-3xl md:text-5xl font-bold text-md-onBackground mb-4 tracking-tight">
+            Our Products & Platforms
+          </h2>
+          <p className="text-xl text-md-onSurfaceVariant max-w-3xl mx-auto">
+            Explore our flagship platforms engineered by ASAYLES TECH—designed with offline resilience, modern UI, and comprehensive doorstep & enterprise support.
+          </p>
 
-          {/* Setup & Support + CTA */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pt-6 border-t border-md-outline/15">
-            <div className="max-w-xl">
-              <h5 className="text-base font-bold text-md-onBackground mb-1">
-                Setup aur Support ke Saath
-              </h5>
-              <p className="text-sm text-md-onSurfaceVariant">
-                ASAYLES TECH restaurants ke liye deployment, setup, staff onboarding aur ongoing support ke paid service plans offer karta hai. Plan aur pricing outlet count aur support needs ke hisaab se quote ki jaati hai.
-              </p>
-            </div>
-            <div className="flex flex-wrap items-center gap-3">
-              <a 
-                href="#contact" 
-                onClick={() => onSelectProduct?.("OrioSlice Restaurant: Book a Demo")}
-              >
-                <Button variant="primary" className="text-sm px-6 py-3">
-                  Book a Demo <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
-              </a>
-              <a 
-                href="#contact" 
-                onClick={() => onSelectProduct?.("OrioSlice Restaurant: Get a Service Quote")}
-              >
-                <Button variant="outline" className="text-sm px-6 py-3">
-                  Get a Service Quote
-                </Button>
-              </a>
-            </div>
+          {/* Carousel Category Pill Selector */}
+          <div className="flex flex-wrap items-center justify-center gap-3 mt-8">
+            {projects.map((proj, idx) => {
+              const isActive = idx === activeSlide;
+              return (
+                <button
+                  key={proj.id}
+                  onClick={() => setActiveSlide(idx)}
+                  className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 flex items-center gap-2.5 cursor-pointer active:scale-95 ${
+                    isActive 
+                      ? "bg-md-primary text-white shadow-md scale-105" 
+                      : "bg-md-surfaceContainer hover:bg-md-surfaceContainer/80 text-md-onSurfaceVariant border border-md-outline/10"
+                  }`}
+                >
+                  {proj.id === 'quickwashhub' && <Car className="w-4 h-4" />}
+                  {proj.id === 'orioslice' && <Utensils className="w-4 h-4" />}
+                  {proj.id === 'medishop' && <Pill className="w-4 h-4" />}
+                  <span>{proj.title.split('—')[0].trim()}</span>
+                  <span className={`text-xs px-2 py-0.5 rounded-full ${isActive ? 'bg-white/20 text-white' : 'bg-md-surfaceContainerLow text-md-onSurfaceVariant'}`}>
+                    0{idx + 1}
+                  </span>
+                </button>
+              );
+            })}
           </div>
         </div>
-      </div>
 
-      {/* PRODUCT NO. 2: MediShop */}
-      <div className="mb-24 bg-md-surfaceContainer rounded-[40px] p-8 md:p-14 shadow-sm border border-md-outline/10 relative overflow-hidden">
-        {/* Subtle decorative glow */}
-        <div className="absolute top-0 right-0 w-80 h-80 bg-md-tertiary/10 rounded-full blur-3xl pointer-events-none" />
-
-        <div className="relative z-10">
-          <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-md-tertiary text-white text-xs font-bold uppercase tracking-wider">
-              <Pill className="w-3.5 h-3.5" />
-              Service No. 2 • Healthcare & Pharmacy Management
-            </div>
-            <span className="text-sm font-medium text-md-onSurfaceVariant bg-md-background px-4 py-1.5 rounded-full border border-md-outline/20">
-              Designed for Independent Pharmacies
-            </span>
+        {/* CAROUSEL CONTAINER */}
+        <div 
+          className="relative"
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+        >
+          {/* Navigation Arrows */}
+          <div className="absolute top-1/2 -left-4 md:-left-6 -translate-y-1/2 z-30">
+            <button
+              onClick={prevSlide}
+              aria-label="Previous Slide"
+              className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-md-background/90 hover:bg-md-background backdrop-blur-md shadow-lg border border-md-outline/20 flex items-center justify-center text-md-onBackground hover:scale-110 active:scale-90 transition-all cursor-pointer"
+            >
+              <ChevronLeft className="w-6 h-6" />
+            </button>
+          </div>
+          <div className="absolute top-1/2 -right-4 md:-right-6 -translate-y-1/2 z-30">
+            <button
+              onClick={nextSlide}
+              aria-label="Next Slide"
+              className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-md-background/90 hover:bg-md-background backdrop-blur-md shadow-lg border border-md-outline/20 flex items-center justify-center text-md-onBackground hover:scale-110 active:scale-90 transition-all cursor-pointer"
+            >
+              <ChevronRight className="w-6 h-6" />
+            </button>
           </div>
 
-          <div className="max-w-3xl mb-8">
-            <h3 className="text-3xl md:text-5xl font-bold text-md-onBackground mb-3 tracking-tight">
-              MediShop — Pharmacy Management Software
-            </h3>
-            <p className="text-xl md:text-2xl font-semibold text-md-tertiary mb-4">
-              Run your pharmacy with greater clarity.
-            </p>
-            <p className="text-lg text-md-onSurfaceVariant leading-relaxed">
-              MediShop is comprehensive pharmacy management software that brings medicine inventory, supplier purchases, counter billing, doctor appointments and customer communication into one workspace. It helps pharmacy owners and staff keep everyday shop records organised and find the information they need during routine work.
-            </p>
-          </div>
+          {/* Slide Content with Zoom & Fade Animation */}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={current.id}
+              initial={{ opacity: 0, scale: 0.96, y: 15 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.96, y: -15 }}
+              transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+              className="bg-md-surfaceContainer rounded-[40px] p-6 sm:p-10 md:p-14 shadow-md border border-md-outline/10 relative overflow-hidden"
+            >
+              {/* Dynamic Ambient Background Glow */}
+              <div 
+                className="absolute top-0 right-0 w-96 h-96 rounded-full blur-3xl pointer-events-none transition-colors duration-700 opacity-30"
+                style={{ backgroundColor: current.accent }}
+              />
 
-          {/* Core Features Grid */}
-          <div className="mb-10">
-            <h4 className="text-lg font-bold text-md-onBackground mb-6 flex items-center gap-2">
-              <Activity className="w-5 h-5 text-md-tertiary" />
-              Core Features
-            </h4>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {[
-                {
-                  title: "Medicine Inventory",
-                  desc: "Maintain a searchable medicine catalogue, import records and track stock by batch, quantity, cost and expiry.",
-                  icon: Boxes
-                },
-                {
-                  title: "Supplier Purchases",
-                  desc: "Record suppliers, purchases and incoming batches to keep stock movements organized.",
-                  icon: Store
-                },
-                {
-                  title: "Billing & Returns",
-                  desc: "Create customer bills, split payments, credit handling, manage returns, and print GST receipts.",
-                  icon: Receipt
-                },
-                {
-                  title: "Doctor Appointments",
-                  desc: "Set up doctor schedules, book customer slots, manage queue, and share public booking links.",
-                  icon: Calendar
-                },
-                {
-                  title: "Customer Notices",
-                  desc: "Prepare doctor-visit notices or shop updates with customer consent and scheduled sending.",
-                  icon: MessageSquare
-                },
-                {
-                  title: "Prescription Review",
-                  desc: "Upload prescription copies for authorized pharmacist verification with strict activity logs.",
-                  icon: FileText
-                },
-                {
-                  title: "Reports & Exports",
-                  desc: "Review recorded shop activity, profit margins, sales history and export for accounting.",
-                  icon: Layers
-                },
-                {
-                  title: "Staff & Offline Flow",
-                  desc: "Role-based access, practice mode for training, and limited offline cash sales from local stock.",
-                  icon: ShieldCheck
-                },
-              ].map((feat, idx) => (
-                <div key={idx} className="p-5 rounded-2xl bg-md-background shadow-sm hover:shadow-md transition-all border border-md-outline/10">
-                  <div className="w-10 h-10 rounded-xl bg-md-tertiary/10 flex items-center justify-center mb-3">
-                    <feat.icon className="w-5 h-5 text-md-tertiary" />
+              {/* SLIDE 1: QUICKWASHHUB */}
+              {current.type === 'quickwashhub' && (
+                <div className="relative z-10">
+                  <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-600 text-white text-xs font-bold uppercase tracking-wider shadow-sm">
+                      <Car className="w-3.5 h-3.5" />
+                      {current.badge}
+                    </div>
+                    <span className="text-xs sm:text-sm font-medium text-emerald-800 bg-emerald-50 px-4 py-1.5 rounded-full border border-emerald-200">
+                      Doorstep Service Available
+                    </span>
                   </div>
-                  <h5 className="font-bold text-md-onBackground text-base mb-1">{feat.title}</h5>
-                  <p className="text-xs text-md-onSurfaceVariant leading-snug">{feat.desc}</p>
+
+                  {/* Hero Showcase with Zooming Effect */}
+                  <div className="mb-10 rounded-[32px] overflow-hidden group relative shadow-xl border border-md-outline/15 bg-slate-900">
+                    <div className="relative overflow-hidden w-full h-[280px] sm:h-[380px] md:h-[480px]">
+                      <motion.img 
+                        src="/images/quickwashhub-sales-hero.png" 
+                        alt={current.heroAlt}
+                        initial={{ scale: 1.12 }}
+                        animate={{ scale: 1 }}
+                        transition={{ duration: 1.2, ease: "easeOut" }}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" 
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-6 md:p-10 text-white">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/90 text-white text-xs font-semibold uppercase tracking-wider backdrop-blur-md w-fit mb-3">
+                          <Sparkles className="w-3.5 h-3.5" />
+                          {current.tagline}
+                        </div>
+                        <h3 className="text-2xl md:text-4xl font-bold tracking-tight mb-2">
+                          QuickWashHub
+                        </h3>
+                        <p className="text-emerald-100 text-sm md:text-base max-w-2xl line-clamp-2 md:line-clamp-none">
+                          {current.headline}
+                        </p>
+                      </div>
+
+                      {/* Zoom Indicator Badge */}
+                      <div className="absolute top-4 right-4 bg-black/40 backdrop-blur-md text-white/90 px-3 py-1.5 rounded-full text-xs flex items-center gap-1.5 opacity-80 group-hover:opacity-100 transition-opacity">
+                        <ZoomIn className="w-3.5 h-3.5" />
+                        <span>Interactive Zoom</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Headline & Overview */}
+                  <div className="max-w-3xl mb-10">
+                    <h3 className="text-2xl sm:text-4xl font-bold text-md-onBackground mb-3 tracking-tight">
+                      {current.headline}
+                    </h3>
+                    <p className="text-base sm:text-lg text-md-onSurfaceVariant leading-relaxed">
+                      {current.subheading}
+                    </p>
+                  </div>
+
+                  {/* 3 Core Doorstep Services */}
+                  <div className="mb-10">
+                    <h4 className="text-lg font-bold text-md-onBackground mb-5 flex items-center gap-2">
+                      <Droplets className="w-5 h-5 text-emerald-600" />
+                      QuickWashHub Services
+                    </h4>
+                    <div className="grid md:grid-cols-3 gap-5">
+                      <div className="p-6 rounded-2xl bg-md-background shadow-sm hover:shadow-md transition-all border border-md-outline/10 group">
+                        <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                          <Car className="w-6 h-6 text-emerald-600" />
+                        </div>
+                        <h5 className="font-bold text-md-onBackground text-lg mb-2">Car Wash</h5>
+                        <p className="text-sm text-md-onSurfaceVariant leading-relaxed">
+                          Apni car ke liye apne area mein available wash service aur price dekhein, phir apni pasand ka time book karein.
+                        </p>
+                      </div>
+
+                      <div className="p-6 rounded-2xl bg-md-background shadow-sm hover:shadow-md transition-all border border-md-outline/10 group">
+                        <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                          <Bike className="w-6 h-6 text-emerald-600" />
+                        </div>
+                        <h5 className="font-bold text-md-onBackground text-lg mb-2">Bike Wash</h5>
+                        <p className="text-sm text-md-onSurfaceVariant leading-relaxed">
+                          Bike wash bhi ghar par book karein. Service options aur price aapke service area ke hisaab se dikhte hain.
+                        </p>
+                      </div>
+
+                      <div className="p-6 rounded-2xl bg-md-background shadow-sm hover:shadow-md transition-all border border-md-outline/10 group">
+                        <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                          <Sun className="w-6 h-6 text-emerald-600" />
+                        </div>
+                        <h5 className="font-bold text-md-onBackground text-lg mb-2">Solar Panel Wash</h5>
+                        <p className="text-sm text-md-onSurfaceVariant leading-relaxed">
+                          Residential ya commercial solar panels ke liye quote request bhejein. Site inspection ke baad final quote share kiya jaata hai.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* How It Works (4-Step Flow) */}
+                  <div className="p-6 md:p-8 rounded-3xl bg-md-background border border-md-outline/10 mb-8">
+                    <h4 className="text-base font-bold text-md-onBackground mb-6 flex items-center gap-2">
+                      <Clock className="w-5 h-5 text-emerald-600" />
+                      How It Works
+                    </h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                      {[
+                        { step: "01", title: "Sign In", desc: "Apna account banayein ya sign in karein." },
+                        { step: "02", title: "Select Service", desc: "Apne area mein available service chunein." },
+                        { step: "03", title: "Set Schedule", desc: "Address aur convenient booking time dein." },
+                        { step: "04", title: "Live Updates", desc: "Booking aur service updates online check karein." },
+                      ].map((item, i) => (
+                        <div key={i} className="p-4 rounded-xl bg-md-surfaceContainerLow/60 border border-md-outline/10">
+                          <span className="text-xs font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full mb-2 inline-block">
+                            Step {item.step}
+                          </span>
+                          <h6 className="font-bold text-md-onBackground text-sm mb-1">{item.title}</h6>
+                          <p className="text-xs text-md-onSurfaceVariant">{item.desc}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Trust Line & Accuracy Note */}
+                  <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-5 rounded-2xl bg-emerald-50/70 border border-emerald-200/80 mb-8">
+                    <div className="flex items-center gap-3">
+                      <ShieldCheck className="w-6 h-6 text-emerald-600 flex-shrink-0" />
+                      <div>
+                        <p className="text-sm font-semibold text-emerald-950">
+                          {current.trustLine}
+                        </p>
+                        <p className="text-xs text-emerald-800 mt-0.5">
+                          Note: Vehicle prices depend on service area. Solar wash requires inspection before final quote.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Action CTAs */}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pt-6 border-t border-md-outline/15">
+                    <div>
+                      <h5 className="text-lg font-bold text-md-onBackground">
+                        Gaadi wash karwana ab aur aasaan.
+                      </h5>
+                      <p className="text-sm text-md-onSurfaceVariant">
+                        QuickWashHub par apni next car ya bike wash book karein.
+                      </p>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-3">
+                      <a 
+                        href="#contact" 
+                        onClick={() => onSelectProduct?.(current.cta1Product)}
+                      >
+                        <button className="inline-flex items-center justify-center px-7 py-3 text-sm font-medium rounded-full bg-emerald-600 text-white hover:bg-emerald-700 active:scale-95 transition-all shadow-md cursor-pointer">
+                          {current.cta1} <ArrowRight className="w-4 h-4 ml-2" />
+                        </button>
+                      </a>
+                      <a 
+                        href="#contact" 
+                        onClick={() => onSelectProduct?.(current.cta2Product)}
+                      >
+                        <Button variant="outline" className="text-sm px-6 py-3">
+                          {current.cta2}
+                        </Button>
+                      </a>
+                    </div>
+                  </div>
                 </div>
-              ))}
-            </div>
-          </div>
+              )}
 
-          {/* Communication Options & Design Highlights */}
-          <div className="grid md:grid-cols-2 gap-5 mb-10">
-            <div className="p-6 rounded-2xl bg-md-background border border-md-outline/15">
-              <h5 className="text-base font-bold text-md-onBackground mb-2 flex items-center gap-2">
-                <MessageSquare className="w-4 h-4 text-md-tertiary" />
-                Communication Options (SMS, WhatsApp, Email)
-              </h5>
-              <p className="text-sm text-md-onSurfaceVariant leading-relaxed">
-                SMS, WhatsApp and email workflows depend on enabled providers. Queued processing available for announcements with customer consent and sending-hour rules.
-              </p>
-            </div>
-            <div className="p-6 rounded-2xl bg-md-background border border-md-outline/15">
-              <h5 className="text-base font-bold text-md-onBackground mb-2 flex items-center gap-2">
-                <Store className="w-4 h-4 text-md-primary" />
-                Designed for Independent Pharmacies
-              </h5>
-              <p className="text-sm text-md-onSurfaceVariant leading-relaxed">
-                MediShop supports connected counter operations—from receiving stock and checking batches to billing and doctor appointments. ASAYLES TECH walks through your workflow and assists with full setup and onboarding.
-              </p>
-            </div>
-          </div>
+              {/* SLIDE 2: ORIOSLICE RESTAURANT */}
+              {current.type === 'orioslice' && (
+                <div className="relative z-10">
+                  <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-md-primary text-md-onPrimary text-xs font-bold uppercase tracking-wider">
+                      <Utensils className="w-3.5 h-3.5" />
+                      {current.badge}
+                    </div>
+                    <span className="text-sm font-medium text-md-onSurfaceVariant bg-md-background px-4 py-1.5 rounded-full border border-md-outline/20">
+                      Offline-Ready Local Server
+                    </span>
+                  </div>
 
-          {/* CTA Row */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pt-6 border-t border-md-outline/15">
-            <div className="max-w-xl">
-              <p className="text-base font-semibold text-md-onBackground">
-                Book a guided demo to see how MediShop fits your pharmacy.
-              </p>
-            </div>
-            <div className="flex flex-wrap items-center gap-3">
-              <a 
-                href="#contact" 
-                onClick={() => onSelectProduct?.("MediShop: Book a Guided Demo")}
-              >
-                <Button variant="tertiary" className="text-sm px-6 py-3">
-                  Book a Guided Demo <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
-              </a>
-              <a 
-                href="#contact" 
-                onClick={() => onSelectProduct?.("MediShop: Discuss Setup & Pricing")}
-              >
-                <Button variant="outline" className="text-sm px-6 py-3">
-                  Discuss Setup & Pricing
-                </Button>
-              </a>
-            </div>
+                  <div className="max-w-3xl mb-8">
+                    <h3 className="text-3xl md:text-5xl font-bold text-md-onBackground mb-3 tracking-tight">
+                      {current.title}
+                    </h3>
+                    <p className="text-xl md:text-2xl font-semibold text-md-primary mb-4">
+                      {current.headline}
+                    </p>
+                    <p className="text-lg text-md-onSurfaceVariant leading-relaxed">
+                      {current.subheading}
+                    </p>
+                  </div>
+
+                  {/* Key Features Grid */}
+                  <div className="mb-10">
+                    <h4 className="text-lg font-bold text-md-onBackground mb-6 flex items-center gap-2">
+                      <Sparkles className="w-5 h-5 text-md-primary" />
+                      Key Features
+                    </h4>
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+                      {[
+                        {
+                          title: "POS & Billing",
+                          desc: "Orders, modifiers, combos, discounts, tax aur instant UPI QR checkout.",
+                          icon: Receipt
+                        },
+                        {
+                          title: "Tables & Reservations",
+                          desc: "Interactive floor view, real-time table status, waitlist aur advance reservations.",
+                          icon: Layers
+                        },
+                        {
+                          title: "Kitchen Display (KDS)",
+                          desc: "Kitchen order tickets (KOT), station routing, priority aur preparation tracking.",
+                          icon: ChefHat
+                        },
+                        {
+                          title: "Menu & Inventory",
+                          desc: "Menu management, ingredient tracking, recipe costing, purchasing aur waste records.",
+                          icon: Boxes
+                        },
+                        {
+                          title: "Team Management",
+                          desc: "Staff roles, biometric/attendance logging, shifts scheduling aur payroll tools.",
+                          icon: Users
+                        },
+                        {
+                          title: "Customers & Reports",
+                          desc: "Customer profiles, loyalty tools, comprehensive sales reports aur owner dashboard.",
+                          icon: FileText
+                        },
+                      ].map((feat, idx) => (
+                        <div key={idx} className="p-5 rounded-2xl bg-md-background shadow-sm hover:shadow-md transition-all border border-md-outline/10">
+                          <div className="w-10 h-10 rounded-xl bg-md-primary/10 flex items-center justify-center mb-3">
+                            <feat.icon className="w-5 h-5 text-md-primary" />
+                          </div>
+                          <h5 className="font-bold text-md-onBackground text-base mb-1">{feat.title}</h5>
+                          <p className="text-sm text-md-onSurfaceVariant leading-snug">{feat.desc}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Flexible Deployment Callout */}
+                  <div className="p-6 rounded-2xl bg-md-secondaryContainer/50 border border-md-outline/15 mb-10">
+                    <div className="flex items-start gap-4">
+                      <div className="w-10 h-10 rounded-full bg-md-primary text-white flex items-center justify-center flex-shrink-0 mt-1">
+                        <WifiOff className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h5 className="text-base font-bold text-md-onSecondaryContainer mb-1">
+                          Flexible Deployment & Local Restaurant Server
+                        </h5>
+                        <p className="text-sm text-md-onSurfaceVariant">
+                          Local restaurant server par chal sakta hai; local network par core billing aur kitchen workflows <strong>internet outage ke dauran bhi uninterrupted kaam karte hain</strong>.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Setup & Support + CTA */}
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pt-6 border-t border-md-outline/15">
+                    <div className="max-w-xl">
+                      <h5 className="text-base font-bold text-md-onBackground mb-1">
+                        Setup aur Support ke Saath
+                      </h5>
+                      <p className="text-sm text-md-onSurfaceVariant">
+                        ASAYLES TECH restaurants ke liye deployment, setup, staff onboarding aur ongoing support ke paid service plans offer karta hai.
+                      </p>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-3">
+                      <a 
+                        href="#contact" 
+                        onClick={() => onSelectProduct?.(current.cta1Product)}
+                      >
+                        <Button variant="primary" className="text-sm px-6 py-3">
+                          {current.cta1} <ArrowRight className="w-4 h-4 ml-2" />
+                        </Button>
+                      </a>
+                      <a 
+                        href="#contact" 
+                        onClick={() => onSelectProduct?.(current.cta2Product)}
+                      >
+                        <Button variant="outline" className="text-sm px-6 py-3">
+                          {current.cta2}
+                        </Button>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* SLIDE 3: MEDISHOP */}
+              {current.type === 'medishop' && (
+                <div className="relative z-10">
+                  <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-md-tertiary text-white text-xs font-bold uppercase tracking-wider">
+                      <Pill className="w-3.5 h-3.5" />
+                      {current.badge}
+                    </div>
+                    <span className="text-sm font-medium text-md-onSurfaceVariant bg-md-background px-4 py-1.5 rounded-full border border-md-outline/20">
+                      Designed for Independent Pharmacies
+                    </span>
+                  </div>
+
+                  <div className="max-w-3xl mb-8">
+                    <h3 className="text-3xl md:text-5xl font-bold text-md-onBackground mb-3 tracking-tight">
+                      {current.title}
+                    </h3>
+                    <p className="text-xl md:text-2xl font-semibold text-md-tertiary mb-4">
+                      {current.headline}
+                    </p>
+                    <p className="text-lg text-md-onSurfaceVariant leading-relaxed">
+                      {current.subheading}
+                    </p>
+                  </div>
+
+                  {/* Core Features Grid */}
+                  <div className="mb-10">
+                    <h4 className="text-lg font-bold text-md-onBackground mb-6 flex items-center gap-2">
+                      <Activity className="w-5 h-5 text-md-tertiary" />
+                      Core Features
+                    </h4>
+                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                      {[
+                        {
+                          title: "Medicine Inventory",
+                          desc: "Searchable medicine catalogue, batch, quantity, cost and expiry tracking.",
+                          icon: Boxes
+                        },
+                        {
+                          title: "Supplier Purchases",
+                          desc: "Suppliers, incoming batches to keep stock movements organized.",
+                          icon: Store
+                        },
+                        {
+                          title: "Billing & Returns",
+                          desc: "Customer bills, split payments, credit handling, returns & GST receipts.",
+                          icon: Receipt
+                        },
+                        {
+                          title: "Doctor Appointments",
+                          desc: "Doctor schedules, customer appointment queue & public booking links.",
+                          icon: Calendar
+                        },
+                        {
+                          title: "Customer Notices",
+                          desc: "Doctor-visit notices or shop updates with customer consent & scheduled sending.",
+                          icon: MessageSquare
+                        },
+                        {
+                          title: "Prescription Review",
+                          desc: "Upload prescription copies for authorized pharmacist verification.",
+                          icon: FileText
+                        },
+                        {
+                          title: "Reports & Exports",
+                          desc: "Shop activity, profit margins, sales history and CSV export.",
+                          icon: Layers
+                        },
+                        {
+                          title: "Staff & Offline Flow",
+                          desc: "Role-based access, practice mode, and limited offline cash walk-in sales.",
+                          icon: ShieldCheck
+                        },
+                      ].map((feat, idx) => (
+                        <div key={idx} className="p-5 rounded-2xl bg-md-background shadow-sm hover:shadow-md transition-all border border-md-outline/10">
+                          <div className="w-10 h-10 rounded-xl bg-md-tertiary/10 flex items-center justify-center mb-3">
+                            <feat.icon className="w-5 h-5 text-md-tertiary" />
+                          </div>
+                          <h5 className="font-bold text-md-onBackground text-base mb-1">{feat.title}</h5>
+                          <p className="text-xs text-md-onSurfaceVariant leading-snug">{feat.desc}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Communication Options */}
+                  <div className="grid md:grid-cols-2 gap-5 mb-10">
+                    <div className="p-6 rounded-2xl bg-md-background border border-md-outline/15">
+                      <h5 className="text-base font-bold text-md-onBackground mb-2 flex items-center gap-2">
+                        <MessageSquare className="w-4 h-4 text-md-tertiary" />
+                        Communication Options (SMS, WhatsApp, Email)
+                      </h5>
+                      <p className="text-sm text-md-onSurfaceVariant leading-relaxed">
+                        SMS, WhatsApp and email workflows depend on enabled providers. Queued processing available with customer consent.
+                      </p>
+                    </div>
+                    <div className="p-6 rounded-2xl bg-md-background border border-md-outline/15">
+                      <h5 className="text-base font-bold text-md-onBackground mb-2 flex items-center gap-2">
+                        <Store className="w-4 h-4 text-md-primary" />
+                        Designed for Independent Pharmacies
+                      </h5>
+                      <p className="text-sm text-md-onSurfaceVariant leading-relaxed">
+                        MediShop supports connected counter operations—from receiving stock to doctor appointments and billing.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* CTA Row */}
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pt-6 border-t border-md-outline/15">
+                    <div className="max-w-xl">
+                      <p className="text-base font-semibold text-md-onBackground">
+                        Book a guided demo to see how MediShop fits your pharmacy.
+                      </p>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-3">
+                      <a 
+                        href="#contact" 
+                        onClick={() => onSelectProduct?.(current.cta1Product)}
+                      >
+                        <Button variant="tertiary" className="text-sm px-6 py-3">
+                          {current.cta1} <ArrowRight className="w-4 h-4 ml-2" />
+                        </Button>
+                      </a>
+                      <a 
+                        href="#contact" 
+                        onClick={() => onSelectProduct?.(current.cta2Product)}
+                      >
+                        <Button variant="outline" className="text-sm px-6 py-3">
+                          {current.cta2}
+                        </Button>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </motion.div>
+          </AnimatePresence>
+
+          {/* Carousel Pagination Dots */}
+          <div className="flex items-center justify-center gap-2.5 mt-8">
+            {projects.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setActiveSlide(idx)}
+                aria-label={`Go to slide ${idx + 1}`}
+                className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
+                  idx === activeSlide ? "w-8 bg-md-primary" : "w-2.5 bg-md-outline/30 hover:bg-md-outline/60"
+                }`}
+              />
+            ))}
           </div>
         </div>
-      </div>
 
-      {/* Additional Custom Engineering Services */}
-      <div className="text-center mb-10">
-        <h3 className="text-2xl md:text-3xl font-bold text-md-onBackground mb-2">
-          Enterprise IT & Architecture Services
-        </h3>
-        <p className="text-md text-md-onSurfaceVariant max-w-xl mx-auto">
-          Need bespoke software or cloud infrastructure? We also provide tailored engineering modules.
-        </p>
-      </div>
-
-      <div className="grid md:grid-cols-3 gap-8">
-        <CardSpotlight className="group hover:-translate-y-2 transition-all duration-300">
-          <div className="w-16 h-16 bg-md-primary/10 rounded-2xl flex items-center justify-center mb-8">
-            <Code className="w-8 h-8 text-md-primary" />
-          </div>
-          <h3 className="text-2xl font-bold text-md-onBackground mb-4">Custom Cyber-Systems</h3>
-          <p className="text-md-onSurfaceVariant leading-relaxed">
-            Developing high-fidelity custom web and mobile applications with cutting-edge frameworks, optimizing user interaction and enterprise workflows.
+        {/* Additional Custom Engineering Services */}
+        <div className="text-center mt-24 mb-10">
+          <h3 className="text-2xl md:text-3xl font-bold text-md-onBackground mb-2">
+            Enterprise IT & Architecture Services
+          </h3>
+          <p className="text-md text-md-onSurfaceVariant max-w-xl mx-auto">
+            Need bespoke software or cloud infrastructure? We also provide tailored engineering modules.
           </p>
-        </CardSpotlight>
+        </div>
 
-        <CardSpotlight className="group hover:-translate-y-2 transition-all duration-300" color="#7D5260">
-          <div className="w-16 h-16 bg-md-tertiary/10 rounded-2xl flex items-center justify-center mb-8">
-            <Cloud className="w-8 h-8 text-md-tertiary" />
-          </div>
-          <h3 className="text-2xl font-bold text-md-onBackground mb-4">Cloud Matrix & On-Prem</h3>
-          <p className="text-md-onSurfaceVariant leading-relaxed">
-            Architecting decentralized, hybrid-cloud and local server infrastructures tailored for zero-downtime reliability in challenging network environments.
-          </p>
-        </CardSpotlight>
+        <div className="grid md:grid-cols-3 gap-8">
+          <CardSpotlight className="group hover:-translate-y-2 transition-all duration-300">
+            <div className="w-16 h-16 bg-md-primary/10 rounded-2xl flex items-center justify-center mb-8">
+              <Code className="w-8 h-8 text-md-primary" />
+            </div>
+            <h3 className="text-2xl font-bold text-md-onBackground mb-4">Custom Cyber-Systems</h3>
+            <p className="text-md-onSurfaceVariant leading-relaxed">
+              Developing high-fidelity custom web and mobile applications with cutting-edge frameworks, optimizing user interaction and enterprise workflows.
+            </p>
+          </CardSpotlight>
 
-        <CardSpotlight className="group hover:-translate-y-2 transition-all duration-300">
-          <div className="w-16 h-16 bg-md-primary/10 rounded-2xl flex items-center justify-center mb-8">
-            <Shield className="w-8 h-8 text-md-primary" />
-          </div>
-          <h3 className="text-2xl font-bold text-md-onBackground mb-4">Security & Integrity</h3>
-          <p className="text-md-onSurfaceVariant leading-relaxed">
-            Integrating military-grade data protection, role-based access management, and strict audit records to secure your business information.
-          </p>
-        </CardSpotlight>
+          <CardSpotlight className="group hover:-translate-y-2 transition-all duration-300" color="#7D5260">
+            <div className="w-16 h-16 bg-md-tertiary/10 rounded-2xl flex items-center justify-center mb-8">
+              <Cloud className="w-8 h-8 text-md-tertiary" />
+            </div>
+            <h3 className="text-2xl font-bold text-md-onBackground mb-4">Cloud Matrix & On-Prem</h3>
+            <p className="text-md-onSurfaceVariant leading-relaxed">
+              Architecting decentralized, hybrid-cloud and local server infrastructures tailored for zero-downtime reliability in challenging network environments.
+            </p>
+          </CardSpotlight>
+
+          <CardSpotlight className="group hover:-translate-y-2 transition-all duration-300">
+            <div className="w-16 h-16 bg-md-primary/10 rounded-2xl flex items-center justify-center mb-8">
+              <Shield className="w-8 h-8 text-md-primary" />
+            </div>
+            <h3 className="text-2xl font-bold text-md-onBackground mb-4">Security & Integrity</h3>
+            <p className="text-md-onSurfaceVariant leading-relaxed">
+              Integrating military-grade data protection, role-based access management, and strict audit records to secure your business information.
+            </p>
+          </CardSpotlight>
+        </div>
       </div>
-    </div>
-  </section>
-);
+    </section>
+  );
+};
 
 // MD3 Filled Text Field implementation
 const InputField = ({ label, type = "text", name, rows, value, onChange }) => {
@@ -739,6 +1061,7 @@ const ContactSection = ({ selectedProduct, onClearProduct }) => {
             {/* Quick selector chips */}
             <div className="flex flex-wrap gap-2 mb-6">
               {[
+                { label: 'QuickWashHub Doorstep Booking', val: 'QuickWashHub: Doorstep Car/Bike/Solar Wash' },
                 { label: 'OrioSlice Restaurant Demo', val: 'OrioSlice Restaurant: Demo & Quote' },
                 { label: 'MediShop Pharmacy Demo', val: 'MediShop Pharmacy: Guided Demo' },
                 { label: 'General / Custom Software', val: 'Custom IT & Software Development' }
